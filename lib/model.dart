@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class LynLocation {
   final String name;
@@ -11,8 +10,8 @@ class LynLocation {
 class RoutePlanResp {
   bool status;
   String info;
-  UnsignedInt infocode;
-  UnsignedInt count;
+  int infocode;
+  int count;
   Route route;
 
   RoutePlanResp(this.status, this.info, this.infocode, this.count, this.route);
@@ -45,8 +44,8 @@ class Route {
 }
 
 class Path {
-  UnsignedInt distance;
-  UnsignedInt duration;
+  int distance;
+  int duration;
   List<Step> steps;
 
   Path(this.distance, this.duration, this.steps);
@@ -69,7 +68,7 @@ class Step {
   String polyline; // geo-point array
   String? action;
   String? assistantAction;
-  UnsignedInt walkType;
+  int walkType;
 
   Step(
       this.instruction,

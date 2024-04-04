@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 import 'package:clue/model.dart';
-import 'package:clue/navbar.dart';
+import 'package:clue/page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -75,41 +73,44 @@ class AppState extends ChangeNotifier {
     LynLocation("快递站", 122.054772, 37.527538),
     LynLocation("校医院", 122.064984, 37.529962),
   ];
-  bool curAsSrc = false;
-  UnsignedInt destId = 0 as UnsignedInt;
-  UnsignedInt srcId = 0 as UnsignedInt;
+  bool curAsOrig = false;
+  int origId = 0;
+  int destId = 0;
 
-  void toggleCurAsSrc() {
-    curAsSrc = !curAsSrc;
+  void toggleCurAsOrig() {
+    curAsOrig = !curAsOrig;
     notifyListeners();
   }
 
-  void setDestId(UnsignedInt value) {
+  void setDestId(int value) {
     destId = value;
     notifyListeners();
   }
 
-  void setSrcId(UnsignedInt value) {
-    srcId = value;
+  void setOrigId(int value) {
+    origId = value;
     notifyListeners();
   }
 
   //~ Internal State
 
-  UnsignedInt pageId = 0 as UnsignedInt;
-  void setPageId(UnsignedInt value) {
+  int pageId = 0;
+  void setPageId(int value) {
     pageId = value;
     notifyListeners();
   }
 }
 
-class PageContainer extends StatelessWidget {
+class PageContainer extends StatefulWidget {
   const PageContainer({super.key});
 
   @override
+  State<PageContainer> createState() => _PageContainerState();
+}
+
+class _PageContainerState extends State<PageContainer> {
+  @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraint) {
-      return const Placeholder();
-    });
+    return const PlanPage();
   }
 }
