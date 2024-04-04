@@ -101,14 +101,9 @@ class AppState extends ChangeNotifier {
   }
 }
 
-class PageContainer extends StatefulWidget {
+class PageContainer extends StatelessWidget {
   const PageContainer({super.key});
 
-  @override
-  State<PageContainer> createState() => _PageContainerState();
-}
-
-class _PageContainerState extends State<PageContainer> {
   @override
   Widget build(BuildContext context) {
     return const PlanPage();
