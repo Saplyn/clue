@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:clue/main.dart';
+import 'package:clue/model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -62,6 +65,7 @@ class PlanPage extends StatelessWidget {
                 print(uriStr);
                 final resp = await http.get(Uri.parse(uriStr));
                 print(resp.body.toString());
+                print(RoutePlanResp.fromJson(jsonDecode(resp.body)));
               },
               label: const Text("规划"),
               icon: const Icon(Icons.travel_explore),

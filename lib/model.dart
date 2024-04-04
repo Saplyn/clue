@@ -10,18 +10,19 @@ class RoutePlanResp {
   bool status;
   String info;
   int infocode;
-  int count;
-  Route route;
+  int? count;
+  Route? route;
 
   RoutePlanResp(this.status, this.info, this.infocode, this.count, this.route);
 
   factory RoutePlanResp.fromJson(Map<String, dynamic> json) {
+    bool status = json['status'].toLowerCase() == 'true';
     return RoutePlanResp(
-      json['status'],
+      status,
       json['info'],
-      json['infocode'],
-      json['count'],
-      Route.fromJson(json['route']),
+      int.parse(json['infocode']),
+      status ? int.parse(json['count']) : null,
+      status ? Route.fromJson(json['route']) : null,
     );
   }
 }
@@ -51,8 +52,8 @@ class Path {
 
   factory Path.fromJson(Map<String, dynamic> json) {
     return Path(
-      json['distance'],
-      json['duration'],
+      int.parse(json['distance']),
+      int.parse(json['duration']),
       (json['steps'] as List).map((i) => Step.fromJson(i)).toList(),
     );
   }
@@ -90,7 +91,7 @@ class Step {
       json['polyline'],
       json['action'],
       json['assistant_action'],
-      json['walk_type'],
+      int.parse(json['walk_type']),
     );
   }
 }
