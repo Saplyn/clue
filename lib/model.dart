@@ -6,18 +6,18 @@ class LynLocation {
   LynLocation(this.name, this.lat, this.lon);
 }
 
-class RoutePlanResp {
+class RoutePlan {
   bool status;
   String info;
   int infocode;
   int? count;
   Route? route;
 
-  RoutePlanResp(this.status, this.info, this.infocode, this.count, this.route);
+  RoutePlan(this.status, this.info, this.infocode, this.count, this.route);
 
-  factory RoutePlanResp.fromJson(Map<String, dynamic> json) {
+  factory RoutePlan.fromJson(Map<String, dynamic> json) {
     bool status = json['status'].toLowerCase() == 'true';
-    return RoutePlanResp(
+    return RoutePlan(
       status,
       json['info'],
       int.parse(json['infocode']),

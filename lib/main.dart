@@ -1,6 +1,9 @@
 import 'package:clue/model.dart';
+import 'package:clue/navbar.dart';
 import 'package:clue/page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -17,7 +20,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Clue',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
           useMaterial3: true,
         ),
         home: const PageContainer(),
@@ -76,6 +79,7 @@ class AppState extends ChangeNotifier {
   bool curAsOrig = false;
   int origId = 0;
   int destId = 0;
+  RoutePlan? routePlan;
 
   void toggleCurAsOrig() {
     curAsOrig = !curAsOrig;
@@ -106,6 +110,28 @@ class PageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PlanPage();
+    Widget page = const Placeholder();
+
+    switch (context.watch<AppState>().pageId) {
+      case 0:
+        page = const PlanPage();
+        break;
+      case 1:
+        page = const Placeholder();
+        break;
+      case 2:
+        page = const Placeholder();
+        break;
+      case 3:
+        page = const Placeholder();
+        break;
+    }
+
+    return Column(
+      children: [
+        Expanded(child: page),
+        const SafeArea(child: BottomNavBar()),
+      ],
+    );
   }
 }
