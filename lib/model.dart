@@ -1,10 +1,9 @@
-
 class LynLocation {
   final String name;
-  final double latitude;
-  final double longitude;
+  final double lat;
+  final double lon;
 
-  LynLocation(this.name, this.latitude, this.longitude);
+  LynLocation(this.name, this.lat, this.lon);
 }
 
 class RoutePlanResp {
