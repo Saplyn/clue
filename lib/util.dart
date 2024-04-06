@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:clue/main.dart';
+import 'package:clue/model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 Icon actionIntoIcon(String? action) {
   switch (action) {
@@ -32,5 +38,41 @@ Icon actionIntoIcon(String? action) {
       return const Icon(Icons.arrow_circle_up);
     default:
       return const Icon(Icons.arrow_upward);
+  }
+}
+
+class PlanButton extends StatelessWidget {
+  const PlanButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<AppState>();
+    var locations = appState.locations;
+    var key = appState.apiKey;
+    var origId = appState.origId;
+    var destId = appState.destId;
+    var requestInProgress = appState.requestInProgress;
+
+    if (requestInProgress) {
+      return const CircularProgressIndicator();
+    }
+
+    return ElevatedButton.icon(
+      onPressed: () async {
+        appState.toggleRequestInProgress();
+        var uriStr = "https://restapi.amap.com/v3/direction/walking?"
+            "origin=${locations[origId].lat},${locations[origId].lon}&"
+            "destination=${locations[destId].lat},${locations[destId].lon}&"
+            "key=$key";
+        print(uriStr);
+        final resp = await http.get(Uri.parse(uriStr));
+        print(resp.body.toString());
+        var plan = RoutePlan.fromJson(jsonDecode(resp.body));
+        appState.setRoutePlan(plan);
+        appState.toggleRequestInProgress();
+      },
+      label: const Text("规划"),
+      icon: const Icon(Icons.travel_explore),
+    );
   }
 }

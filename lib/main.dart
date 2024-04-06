@@ -102,8 +102,15 @@ class AppState extends ChangeNotifier {
   //~ Internal State
 
   int pageId = 0;
+  bool requestInProgress = false;
+
   void setPageId(int value) {
     pageId = value;
+    notifyListeners();
+  }
+
+  void toggleRequestInProgress() {
+    requestInProgress = !requestInProgress;
     notifyListeners();
   }
 }
@@ -123,10 +130,7 @@ class PageContainer extends StatelessWidget {
         page = const InstructionPage();
         break;
       case 2:
-        page = const Placeholder();
-        break;
-      case 3:
-        page = const Placeholder();
+        page = const MapPage();
         break;
     }
 

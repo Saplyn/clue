@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:convert';
+import 'dart:math';
 
 import 'package:clue/main.dart';
-import 'package:clue/model.dart';
 import 'package:clue/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class PlanPage extends StatelessWidget {
   const PlanPage({super.key});
@@ -83,32 +81,7 @@ class PlanPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton.icon(
-                onPressed: () async {
-                  var uriStr = "https://restapi.amap.com/v3/direction/walking?"
-                      "origin=${locations[origId].lat},${locations[origId].lon}&"
-                      "destination=${locations[destId].lat},${locations[destId].lon}&"
-                      "key=$key";
-                  print(uriStr);
-                  final resp = await http.get(Uri.parse(uriStr));
-                  print(resp.body.toString());
-                  var plan = RoutePlan.fromJson(jsonDecode(resp.body));
-                  // print everything
-                  print(plan.status);
-                  print(plan.info);
-                  print(plan.infocode);
-                  print(plan.count);
-                  print(plan.route?.origin);
-                  print(plan.route?.destination);
-                  print(plan.route?.paths[0].distance);
-                  print(plan.route?.paths[0].duration);
-                  print(plan.route?.paths[0].steps[0].instruction);
-
-                  appState.setRoutePlan(plan);
-                },
-                label: const Text("规划"),
-                icon: const Icon(Icons.travel_explore),
-              )
+              PlanButton(),
             ],
           ),
         );
@@ -126,45 +99,105 @@ class InstructionPage extends StatelessWidget {
     var path = appState.routePlan?.route?.paths[0];
 
     if (path != null) {
-      return ListView.builder(
-        itemCount: path.steps.length,
-        itemBuilder: (context, index) {
-          var step = path.steps[index];
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            step.instruction,
-                            textAlign: TextAlign.left,
-                          ),
-                          Text('${step.road == null ? '' : '${step.road!}：'}'
-                              '向${step.orientation}'
-                              '步行约 ${step.distance} 米，'
-                              '约 ${(step.duration / 60).toStringAsFixed(1)} 分钟'),
-                        ],
-                      ),
-                      actionIntoIcon(step.action),
-                    ],
-                  ),
-                ],
+      return Scaffold(
+        body: ListView.builder(
+          itemCount: path.steps.length,
+          itemBuilder: (context, index) {
+            var step = path.steps[index];
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              step.instruction,
+                              textAlign: TextAlign.left,
+                            ),
+                            Text('${step.road == null ? '' : '${step.road!}：'}'
+                                '向${step.orientation}'
+                                '步行约 ${step.distance} 米，'
+                                '约 ${(step.duration / 60).toStringAsFixed(1)} 分钟'),
+                          ],
+                        ),
+                        actionIntoIcon(step.action),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       );
     }
 
-    return const Center(
-      child: Text("请先规划路径"),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton.icon(
+          onPressed: () {
+            appState.setPageId(0);
+          },
+          icon: Icon(Icons.arrow_back),
+          label: Text("请先规划路径"),
+        ),
+      ),
+    );
+  }
+}
+
+class MapPage extends StatelessWidget {
+  const MapPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<AppState>();
+
+    if (appState.routePlan == null || !appState.routePlan!.status) {
+      return Scaffold(
+        body: Center(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              appState.setPageId(0);
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text("请先规划路径"),
+          ),
+        ),
+      );
+    }
+
+    String? polyline;
+    for (var step in appState.routePlan!.route!.paths[0].steps) {
+      if (polyline == null) {
+        polyline = step.polyline;
+      } else {
+        polyline += ';${step.polyline}';
+      }
+    }
+
+    return Scaffold(
+      body: LayoutBuilder(builder: (context, constraints) {
+        int width = min(constraints.maxWidth.toInt(), 1024);
+        int height = min(constraints.maxHeight.toInt(), 1024);
+        String orig = appState.routePlan!.route!.origin;
+        String dest = appState.routePlan!.route!.destination;
+
+        String url = 'https://restapi.amap.com/v3/staticmap?'
+            'size=$width*$height&'
+            'paths=3,0xffa500,1,,:$polyline&'
+            'markers=mid,0xFFFFFF,起:$orig|mid,0xFFFFFF,终:$dest&'
+            'key=b0782224d5e9af4baa9f35244dcbd8aa';
+        return Center(
+          child: Image.network(url),
+        );
+      }),
     );
   }
 }

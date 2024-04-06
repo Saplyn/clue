@@ -8,8 +8,10 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<AppState>();
+    var pageId = appState.pageId;
 
     return BottomNavigationBar(
+      currentIndex: pageId,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.explore),
@@ -22,10 +24,6 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
           label: "地图",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.directions),
-          label: "指引",
         ),
       ],
       onTap: (id) {
