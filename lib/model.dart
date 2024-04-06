@@ -16,7 +16,7 @@ class RoutePlan {
   RoutePlan(this.status, this.info, this.infocode, this.count, this.route);
 
   factory RoutePlan.fromJson(Map<String, dynamic> json) {
-    bool status = json['status'].toLowerCase() == 'true';
+    bool status = json['status'].toLowerCase() == '1';
     return RoutePlan(
       status,
       json['info'],
@@ -63,8 +63,8 @@ class Step {
   String instruction;
   String orientation;
   String? road;
-  String distance;
-  String duration;
+  int distance;
+  int duration;
   String polyline; // geo-point array
   String? action;
   String? assistantAction;
@@ -85,12 +85,14 @@ class Step {
     return Step(
       json['instruction'],
       json['orientation'],
-      json['road'],
-      json['distance'],
-      json['duration'],
+      json['road'] is List<dynamic> ? null : json['road'],
+      int.parse(json['distance']),
+      int.parse(json['duration']),
       json['polyline'],
-      json['action'],
-      json['assistant_action'],
+      json['action'] is List<dynamic> ? null : json['action'],
+      json['assistant_action'] is List<dynamic>
+          ? null
+          : json['assistant_action'],
       int.parse(json['walk_type']),
     );
   }

@@ -1,9 +1,7 @@
 import 'package:clue/model.dart';
 import 'package:clue/navbar.dart';
 import 'package:clue/page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,7 +18,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Clue',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
           useMaterial3: true,
         ),
         home: const PageContainer(),
@@ -42,9 +40,9 @@ class AppState extends ChangeNotifier {
   //~ Campus Navigator Data
 
   final locations = <LynLocation>[
+    LynLocation("南门", 122.060376, 37.526559),
     LynLocation("东门", 122.065147, 37.530236),
     LynLocation("西南门", 122.056318, 37.527422),
-    LynLocation("南门", 122.060376, 37.526559),
     LynLocation("机电与信息工程学院", 122.061757, 37.527422),
     LynLocation("海洋学院", 122.061079, 37.528721),
     LynLocation("商学院（学院楼）", 122.06105, 37.529606),
@@ -96,6 +94,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setRoutePlan(RoutePlan value) {
+    routePlan = value;
+    notifyListeners();
+  }
+
   //~ Internal State
 
   int pageId = 0;
@@ -117,7 +120,7 @@ class PageContainer extends StatelessWidget {
         page = const PlanPage();
         break;
       case 1:
-        page = const Placeholder();
+        page = const InstructionPage();
         break;
       case 2:
         page = const Placeholder();
