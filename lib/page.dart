@@ -26,67 +26,65 @@ class PlanPage extends StatelessWidget {
       ));
     }
 
-    return Scaffold(
-      body: LayoutBuilder(builder: (context, constraint) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  textAlign: TextAlign.center,
-                  initialValue: key,
-                  decoration: const InputDecoration(
-                    labelText: "API Key",
-                  ),
-                  onChanged: (val) {
-                    appState.setApiKey(val);
-                    print("API Key: $val");
-                  },
+    return LayoutBuilder(builder: (context, constraint) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 300,
+              child: TextFormField(
+                textAlign: TextAlign.center,
+                initialValue: key,
+                decoration: const InputDecoration(
+                  labelText: "API Key",
                 ),
-              ),
-              const Divider(
-                height: 40,
-              ),
-              SizedBox(
-                width: 300,
-                child: Text(
-                  "起点",
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              DropdownButton(
-                value: origId,
-                items: dropdownItems,
                 onChanged: (val) {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  appState.setOrigId(val!);
-                  print("orig: ${locations[val].name}");
+                  appState.setApiKey(val);
+                  print("API Key: $val");
                 },
               ),
-              SizedBox(
-                width: 300,
-                child: Text("终点"),
+            ),
+            const Divider(
+              height: 40,
+            ),
+            SizedBox(
+              width: 300,
+              child: Text(
+                "起点",
+                textAlign: TextAlign.left,
               ),
-              DropdownButton(
-                value: destId,
-                items: dropdownItems,
-                onChanged: (val) {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  appState.setDestId(val!);
-                  print("dest: ${locations[val].name}");
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              PlanButton(),
-            ],
-          ),
-        );
-      }),
-    );
+            ),
+            DropdownButton(
+              value: origId,
+              items: dropdownItems,
+              onChanged: (val) {
+                FocusScope.of(context).requestFocus(FocusNode());
+                appState.setOrigId(val!);
+                print("orig: ${locations[val].name}");
+              },
+            ),
+            SizedBox(
+              width: 300,
+              child: Text("终点"),
+            ),
+            DropdownButton(
+              value: destId,
+              items: dropdownItems,
+              onChanged: (val) {
+                FocusScope.of(context).requestFocus(FocusNode());
+                appState.setDestId(val!);
+                print("dest: ${locations[val].name}");
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            PlanButton(),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -95,58 +93,66 @@ class InstructionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var style = theme.textTheme.displaySmall!.copyWith(
+      color: theme.colorScheme.primary,
+    );
     var appState = context.watch<AppState>();
     var path = appState.routePlan?.route?.paths[0];
 
     if (path != null) {
-      return Scaffold(
-        body: ListView.builder(
-          itemCount: path.steps.length,
-          itemBuilder: (context, index) {
-            var step = path.steps[index];
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              step.instruction,
-                              textAlign: TextAlign.left,
+      return ListView.builder(
+        itemCount: path.steps.length,
+        itemBuilder: (context, index) {
+          var step = path.steps[index];
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${step.road == null ? '' : '${step.road!}：'}'
+                            '向${step.orientation}'
+                            '步行约 ${step.distance} 米'
+                            '${step.action == null ? '' : '后${step.action}'}',
+                            style: style.copyWith(
+                              color: style.color,
+                              fontSize: 18,
                             ),
-                            Text('${step.road == null ? '' : '${step.road!}：'}'
-                                '向${step.orientation}'
-                                '步行约 ${step.distance} 米，'
-                                '约 ${(step.duration / 60).toStringAsFixed(1)} 分钟'),
-                          ],
-                        ),
+                          ),
+                          Text('${step.instruction}，'
+                              '约 ${(step.duration / 60).toStringAsFixed(1)} 分钟'),
+                        ],
+                      ),
+                      Icon(
                         actionIntoIcon(step.action),
-                      ],
-                    ),
-                  ],
-                ),
+                        size: 32,
+                        color: theme.primaryColor,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
     }
 
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton.icon(
-          onPressed: () {
-            appState.setPageId(0);
-          },
-          icon: Icon(Icons.arrow_back),
-          label: Text("请先规划路径"),
-        ),
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () {
+          appState.setPageId(0);
+        },
+        icon: Icon(Icons.arrow_back),
+        label: Text("请先规划路径"),
       ),
     );
   }
@@ -160,15 +166,13 @@ class MapPage extends StatelessWidget {
     var appState = context.watch<AppState>();
 
     if (appState.routePlan == null || !appState.routePlan!.status) {
-      return Scaffold(
-        body: Center(
-          child: ElevatedButton.icon(
-            onPressed: () {
-              appState.setPageId(0);
-            },
-            icon: Icon(Icons.arrow_back),
-            label: Text("请先规划路径"),
-          ),
+      return Center(
+        child: ElevatedButton.icon(
+          onPressed: () {
+            appState.setPageId(0);
+          },
+          icon: Icon(Icons.arrow_back),
+          label: Text("请先规划路径"),
         ),
       );
     }
@@ -182,22 +186,20 @@ class MapPage extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      body: LayoutBuilder(builder: (context, constraints) {
-        int width = min(constraints.maxWidth.toInt(), 1024);
-        int height = min(constraints.maxHeight.toInt(), 1024);
-        String orig = appState.routePlan!.route!.origin;
-        String dest = appState.routePlan!.route!.destination;
+    return LayoutBuilder(builder: (context, constraints) {
+      int width = min(constraints.maxWidth.toInt(), 1024);
+      int height = min(constraints.maxHeight.toInt(), 1024);
+      String orig = appState.routePlan!.route!.origin;
+      String dest = appState.routePlan!.route!.destination;
 
-        String url = 'https://restapi.amap.com/v3/staticmap?'
-            'size=$width*$height&'
-            'paths=3,0xffa500,1,,:$polyline&'
-            'markers=mid,0xFFFFFF,起:$orig|mid,0xFFFFFF,终:$dest&'
-            'key=b0782224d5e9af4baa9f35244dcbd8aa';
-        return Center(
-          child: Image.network(url),
-        );
-      }),
-    );
+      String url = 'https://restapi.amap.com/v3/staticmap?'
+          'size=$width*$height&'
+          'paths=3,0xffa500,1,,:$polyline&'
+          'markers=mid,0xFFFFFF,起:$orig|mid,0xFFFFFF,终:$dest&'
+          'key=b0782224d5e9af4baa9f35244dcbd8aa';
+      return Center(
+        child: Image.network(url),
+      );
+    });
   }
 }

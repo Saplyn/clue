@@ -120,6 +120,7 @@ class PageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     Widget page = const Placeholder();
 
     switch (context.watch<AppState>().pageId) {
@@ -134,11 +135,30 @@ class PageContainer extends StatelessWidget {
         break;
     }
 
-    return Column(
-      children: [
-        Expanded(child: page),
-        const SafeArea(child: BottomNavBar()),
-      ],
+    Widget mainArea = ColoredBox(
+      color: colorScheme.surfaceVariant,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 100),
+        child: page,
+      ),
+    );
+    return Scaffold(
+      body: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth >= 600) {
+          return Row(
+            children: [
+              SafeArea(child: SideNavBar(constraints.maxWidth)),
+              Expanded(child: mainArea),
+            ],
+          );
+        }
+        return Column(
+          children: [
+            Expanded(child: mainArea),
+            const SafeArea(child: BottomNavBar()),
+          ],
+        );
+      }),
     );
   }
 }

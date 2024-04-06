@@ -33,3 +33,37 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 }
+
+class SideNavBar extends StatelessWidget {
+  final double width;
+  const SideNavBar(this.width, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<AppState>();
+    var pageId = appState.pageId;
+
+    return NavigationRail(
+      extended: width >= 800,
+      selectedIndex: pageId,
+      destinations: const [
+        NavigationRailDestination(
+          icon: Icon(Icons.explore),
+          label: Text("规划路径"),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.route),
+          label: Text("路线"),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.map),
+          label: Text("地图"),
+        ),
+      ],
+      onDestinationSelected: (id) {
+        appState.setPageId(id);
+        print(appState.pageId);
+      },
+    );
+  }
+}
