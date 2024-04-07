@@ -193,7 +193,7 @@ class MapPage extends StatelessWidget {
           'size=$width*$height&'
           'paths=3,0xffa500,1,,:$polyline&'
           'markers=mid,0xFFFFFF,起:$orig|mid,0xFFFFFF,终:$dest&'
-          'key=b0782224d5e9af4baa9f35244dcbd8aa';
+          'key=${appState.apiKey}';
       return Center(
         child: Image.network(url),
       );
