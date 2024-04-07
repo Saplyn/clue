@@ -64,9 +64,7 @@ class PlanButton extends StatelessWidget {
             "origin=${locations[origId].lat},${locations[origId].lon}&"
             "destination=${locations[destId].lat},${locations[destId].lon}&"
             "key=$key";
-        print(uriStr);
         final resp = await http.get(Uri.parse(uriStr));
-        print(resp.body.toString());
         var plan = RoutePlan.fromJson(jsonDecode(resp.body));
         appState.setRoutePlan(plan);
         appState.toggleRequestInProgress();

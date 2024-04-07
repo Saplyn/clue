@@ -28,7 +28,6 @@ class BottomNavBar extends StatelessWidget {
       ],
       onTap: (id) {
         appState.setPageId(id);
-        print(appState.pageId);
       },
     );
   }
@@ -62,7 +61,6 @@ class SideNavBar extends StatelessWidget {
       ],
       onDestinationSelected: (id) {
         appState.setPageId(id);
-        print(appState.pageId);
       },
     );
   }

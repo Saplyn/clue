@@ -37,11 +37,10 @@ class PlanPage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 initialValue: key,
                 decoration: const InputDecoration(
-                  labelText: "API Key",
+                  labelText: "高德 Web API Key",
                 ),
                 onChanged: (val) {
                   appState.setApiKey(val);
-                  print("API Key: $val");
                 },
               ),
             ),
@@ -61,7 +60,6 @@ class PlanPage extends StatelessWidget {
               onChanged: (val) {
                 FocusScope.of(context).requestFocus(FocusNode());
                 appState.setOrigId(val!);
-                print("orig: ${locations[val].name}");
               },
             ),
             SizedBox(
@@ -74,7 +72,6 @@ class PlanPage extends StatelessWidget {
               onChanged: (val) {
                 FocusScope.of(context).requestFocus(FocusNode());
                 appState.setDestId(val!);
-                print("dest: ${locations[val].name}");
               },
             ),
             const SizedBox(
